@@ -39,11 +39,8 @@
                 android:name="com.android.settings.summary"
                 android:resource="@string/touchscreen_gesture_settings_summary" />
             <meta-data
-                android:name="com.android.settings.icon"
-                android:resource="@drawable/ic_touch" />
-            <meta-data
                 android:name="com.android.settings.category"
-                android:value="com.android.settings.category.ia.system" />
+                android:value="com.android.settings.category.ia.gestures" />
         </activity>
 
         <activity
