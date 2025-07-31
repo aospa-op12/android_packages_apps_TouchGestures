@@ -99,7 +99,8 @@ public class KeyHandler implements DeviceKeyHandler {
         mVibrator = context.getSystemService(Vibrator.class);
 
         mContext.registerReceiver(mUpdateReceiver,
-                new IntentFilter(TouchscreenGestureConstants.UPDATE_PREFS_ACTION));
+                new IntentFilter(TouchscreenGestureConstants.UPDATE_PREFS_ACTION),
+                        Context.RECEIVER_NOT_EXPORTED);
     }
 
     private class TorchModeCallback extends CameraManager.TorchCallback {
