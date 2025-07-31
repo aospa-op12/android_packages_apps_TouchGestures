@@ -16,6 +16,9 @@
 
 package com.android.touch.gestures;
 
+import static android.content.Intent.ACTION_BOOT_COMPLETED;
+import static android.content.Intent.ACTION_LOCKED_BOOT_COMPLETED;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +32,20 @@ public class BootReceiver extends BroadcastReceiver {
 
     private static final String TAG = "BootReceiver";
     private static final String ONE_TIME_TUNABLE_RESTORE = "hardware_tunable_restored";
+    private static final String KEY_MIGRATION_DONE = "migration_done";
 
     @Override
-    public void onReceive(Context ctx, Intent intent) {
-        TouchscreenGestureSettings.MainSettingsFragment.restoreTouchscreenGestureStates(ctx);
+    public void onReceive(final Context context, final Intent intent) {
+        final SharedPreferences dePrefs = TouchscreenGestureConstants.getDESharedPrefs(context);
+        final boolean migrationDone = dePrefs.getBoolean(KEY_MIGRATION_DONE, false);
+
+        if (intent.getAction().equals(ACTION_BOOT_COMPLETED) &&
+                !dePrefs.getBoolean(KEY_MIGRATION_DONE, false)) {
+            TouchscreenGestureSettings.MainSettingsFragment.migrateTouchscreenGestureStates(context);
+            dePrefs.edit().putBoolean(KEY_MIGRATION_DONE, true).commit();
+        }
+
+        TouchscreenGestureSettings.MainSettingsFragment.restoreTouchscreenGestureStates(context);
     }
 
     private boolean hasRestoredTunable(Context context) {

@@ -17,6 +17,9 @@
 
 package com.android.touch.gestures;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 class TouchscreenGestureConstants {
     // Broadcast action for settings update
     static final String UPDATE_PREFS_ACTION = "com.android.touch.gestures.UPDATE_SETTINGS";
@@ -24,6 +27,8 @@ class TouchscreenGestureConstants {
     static final String UPDATE_EXTRA_KEYCODE_MAPPING = "keycode_mappings";
     // Broadcast extra: assigned actions (int[]: key = gesture ID, value = action)
     static final String UPDATE_EXTRA_ACTION_MAPPING = "action_mappings";
+
+    static final String DE_PREF_FILE_NAME = "device_settings";
 
     // Touchscreen gesture actions
     static final int ACTION_FLASHLIGHT = 1;
@@ -39,4 +44,9 @@ class TouchscreenGestureConstants {
     static final int ACTION_VOLUME_UP = 11;
     static final int ACTION_AMBIENT_DISPLAY = 12;
     static final int ACTION_WAKE_DEVICE = 13;
+
+    static SharedPreferences getDESharedPrefs(Context context) {
+        return context.createDeviceProtectedStorageContext()
+                .getSharedPreferences(DE_PREF_FILE_NAME, Context.MODE_PRIVATE);
+    }
 }
