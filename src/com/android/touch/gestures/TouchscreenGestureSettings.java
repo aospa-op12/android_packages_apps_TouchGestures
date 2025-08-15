@@ -100,6 +100,7 @@ public class TouchscreenGestureSettings extends CollapsingToolbarBaseActivity
         private class TouchscreenGesturePreference extends ListPreference {
             private final Context mContext;
             private final TouchscreenGesture mGesture;
+            private final SharedPreferences mDePrefs;
 
             public TouchscreenGesturePreference(final Context context,
                                                 final TouchscreenGesture gesture,
@@ -107,16 +108,21 @@ public class TouchscreenGestureSettings extends CollapsingToolbarBaseActivity
                 super(context);
                 mContext = context;
                 mGesture = gesture;
+                mDePrefs = TouchscreenGestureConstants.getDESharedPrefs(context);
 
-                setKey(buildPreferenceKey(gesture));
+                final String key = buildPreferenceKey(gesture);
+                final String defaultActionValue = String.valueOf(defaultAction);
+
+                setKey(key);
                 setEntries(R.array.touchscreen_gesture_action_entries);
                 setEntryValues(R.array.touchscreen_gesture_action_values);
-                setDefaultValue(String.valueOf(defaultAction));
+                setDefaultValue(defaultActionValue);
 
                 setSummary("%s");
                 setDialogTitle(R.string.touchscreen_gesture_action_dialog_title);
                 setTitle(ResourceUtils.getLocalizedString(
                         context.getResources(), gesture.name, TOUCHSCREEN_GESTURE_TITLE));
+                setValue(mDePrefs.getString(key, defaultActionValue));
             }
 
             @Override
@@ -126,6 +132,9 @@ public class TouchscreenGestureSettings extends CollapsingToolbarBaseActivity
                 if (!manager.setTouchscreenGestureEnabled(mGesture, action > 0)) {
                     return false;
                 }
+                final SharedPreferences.Editor editor = mDePrefs.edit();
+                editor.putString(getKey(), String.valueOf(newValue));
+                editor.apply();
                 return super.callChangeListener(newValue);
             }
 

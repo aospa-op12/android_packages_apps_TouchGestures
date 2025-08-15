@@ -32,7 +32,7 @@ public class BootReceiver extends BroadcastReceiver {
 
     private static final String TAG = "BootReceiver";
     private static final String ONE_TIME_TUNABLE_RESTORE = "hardware_tunable_restored";
-    private static final String KEY_MIGRATION_DONE = "migration_done";
+    private static final String KEY_MIGRATION_DONE = "migration_done_1";
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
