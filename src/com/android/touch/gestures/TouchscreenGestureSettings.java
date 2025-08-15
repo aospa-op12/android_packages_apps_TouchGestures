@@ -159,13 +159,15 @@ public class TouchscreenGestureSettings extends CollapsingToolbarBaseActivity
             final int[] actionList = buildOldActionList(context, gestures);
             final SharedPreferences oldPrefs = PreferenceManager.getDefaultSharedPreferences(context);
             final SharedPreferences.Editor oldPrefsEditor = oldPrefs.edit();
-            final SharedPreferences.Editor newPrefsEditor =
-                    TouchscreenGestureConstants.getDESharedPrefs(context).edit();
+            final SharedPreferences newPrefs = TouchscreenGestureConstants.getDESharedPrefs(context);
+            final SharedPreferences.Editor newPrefsEditor = newPrefs.edit();
             for (final TouchscreenGesture gesture : gestures) {
                 final String key = buildPreferenceKey(gesture);
                 final String oldValue = oldPrefs.getString(key, null);
-                if (oldValue == null) continue;
-                newPrefsEditor.putString(key, oldValue);
+                final String newValue = newPrefs.getString(key, null);
+                if (oldValue != null && newValue == null) {
+                    newPrefsEditor.putString(key, oldValue);
+                }
                 oldPrefsEditor.remove(key);
             }
             newPrefsEditor.commit();
