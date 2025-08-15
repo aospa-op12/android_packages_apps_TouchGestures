@@ -27,7 +27,7 @@ public class ActionUtils {
     }
 
     private static Intent getDialerIntent() {
-        return new Intent(Intent.ACTION_DIAL, null);
+        return new Intent(Intent.ACTION_CALL_BUTTON);
     }
 
     private static Intent getEmailIntent(Context context) {
