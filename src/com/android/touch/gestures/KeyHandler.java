@@ -49,8 +49,6 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final String GESTURE_WAKEUP_REASON = "touchscreen-gesture-wakeup";
     private static final String PULSE_ACTION = "com.android.systemui.doze.pulse";
     private static final int GESTURE_REQUEST = 0;
-    private static final int GESTURE_WAKELOCK_DURATION = 3000;
-    private static final int EVENT_PROCESS_WAKELOCK_DURATION = 500;
 
     private final Context mContext;
     private final AudioManager mAudioManager;
@@ -127,7 +125,7 @@ public class KeyHandler implements DeviceKeyHandler {
         if (action != 0 && !mEventHandler.hasMessages(GESTURE_REQUEST)
                 && event.getAction() != KeyEvent.ACTION_UP) {
             final Message msg = getMessageForAction(action);
-            mGestureWakeLock.acquire(EVENT_PROCESS_WAKELOCK_DURATION);
+            mGestureWakeLock.acquire();
             mEventHandler.sendMessage(msg);
         }
 
@@ -194,11 +192,11 @@ public class KeyHandler implements DeviceKeyHandler {
                     wakeDevice();
                     break;
             }
+            mGestureWakeLock.release();
         }
     }
 
     private void launchCamera() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         final Intent intent = new Intent(android.content.Intent.ACTION_SCREEN_CAMERA_GESTURE);
         mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT,
                 Manifest.permission.STATUS_BAR_SERVICE);
@@ -206,28 +204,24 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     private void launchBrowser() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         mPowerManager.wakeUp(SystemClock.uptimeMillis(), GESTURE_WAKEUP_REASON);
         ActionUtils.triggerAction(mContext, TouchscreenGestureConstants.ACTION_BROWSER);
         doHapticFeedback();
     }
 
     private void launchDialer() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         mPowerManager.wakeUp(SystemClock.uptimeMillis(), GESTURE_WAKEUP_REASON);
         ActionUtils.triggerAction(mContext, TouchscreenGestureConstants.ACTION_DIALER);
         doHapticFeedback();
     }
 
     private void launchEmail() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         mPowerManager.wakeUp(SystemClock.uptimeMillis(), GESTURE_WAKEUP_REASON);
         ActionUtils.triggerAction(mContext, TouchscreenGestureConstants.ACTION_EMAIL);
         doHapticFeedback();
     }
 
     private void launchMessages() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         mPowerManager.wakeUp(SystemClock.uptimeMillis(), GESTURE_WAKEUP_REASON);
         ActionUtils.triggerAction(mContext, TouchscreenGestureConstants.ACTION_MESSAGES);
         doHapticFeedback();
@@ -236,7 +230,6 @@ public class KeyHandler implements DeviceKeyHandler {
     private void toggleFlashlight() {
         String rearCameraId = getRearCameraId();
         if (rearCameraId != null) {
-            mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
             try {
                 mCameraManager.setTorchMode(rearCameraId, !mTorchEnabled);
                 mTorchEnabled = !mTorchEnabled;
@@ -263,13 +256,11 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     private void volumeDown() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0);
         doHapticFeedback();
     }
 
     private void volumeUp() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
         doHapticFeedback();
     }
@@ -278,14 +269,12 @@ public class KeyHandler implements DeviceKeyHandler {
         final boolean dozeEnabled = Settings.Secure.getInt(mContext.getContentResolver(),
                 Settings.Secure.DOZE_ENABLED, 1) != 0;
         if (dozeEnabled) {
-            mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
             final Intent intent = new Intent(PULSE_ACTION);
             mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
         }
     }
 
     private void wakeDevice() {
-        mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
         mPowerManager.wakeUp(SystemClock.uptimeMillis(), GESTURE_WAKEUP_REASON);
     }
 
