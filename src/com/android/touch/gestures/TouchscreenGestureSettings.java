@@ -33,8 +33,8 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.internal.yaap.hardware.LineageHardwareManager;
-import com.android.internal.yaap.hardware.TouchscreenGesture;
+import com.android.internal.lineage.hardware.LineageHardwareManager;
+import com.android.internal.lineage.hardware.TouchscreenGesture;
 
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity;
 import com.android.settingslib.widget.ExpressiveDesignEnabledProvider;
